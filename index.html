@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#07110e" />
+    <title>THIRDCOMM Field Analysis Terminal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="screen-noise" aria-hidden="true"></div>
+
+    <main class="terminal-shell">
+      <section id="intro" class="intro" aria-label="Start field analysis">
+        <p class="system-label">THIRDCOMM // FIELD ANALYSIS TERMINAL</p>
+        <button id="begin-button" class="magnifier-button" type="button" aria-label="Begin evidence scan">
+          <img src="magnifying-glass.png" alt="Magnifying glass" />
+          <span>INITIATE SCAN</span>
+        </button>
+        <p id="intro-status" class="intro-status">SELECT OPTICAL INSTRUMENT TO BEGIN</p>
+      </section>
+
+      <section id="terminal" class="terminal hidden" aria-live="polite">
+        <header class="terminal-header">
+          <div>
+            <p class="eyebrow">THIRDCOMM / UNIT 03</p>
+            <h1>FIELD ANALYSIS TERMINAL</h1>
+          </div>
+          <p class="signal"><span></span> SIGNAL LOCKED</p>
+        </header>
+
+        <div class="scan-report" aria-label="Scan report">
+          <span class="prompt">&gt;</span> <span id="typewriter"></span><span class="cursor">_</span>
+        </div>
+
+        <nav class="tabs" aria-label="Evidence sections">
+          <button class="tab active" type="button" role="tab" aria-selected="true" aria-controls="photo-panel" data-panel="photo-panel">PHOTOGRAPHIC EVIDENCE</button>
+          <button class="tab" type="button" role="tab" aria-selected="false" aria-controls="log-panel" data-panel="log-panel">EVIDENCE LOG</button>
+        </nav>
+
+        <section id="photo-panel" class="panel active" role="tabpanel">
+          <div class="panel-heading"><span>EXHIBIT A</span><span>IMAGE // 01</span></div>
+          <p class="panel-note">Expand or pinch to inspect the photograph.</p>
+          <div class="photo-frame">
+            <img src="duolingo.png" alt="Photographic evidence" />
+          </div>
+        </section>
+
+        <section id="log-panel" class="panel" role="tabpanel" hidden>
+          <div class="panel-heading"><span>ANALYST INPUT</span><span>COUNT REQUIRED</span></div>
+          <p class="panel-note">How many birds are visible in Exhibit A?</p>
+          <div class="input-module">
+            <div id="answer-display" class="answer-display" aria-label="Entered bird count">_</div>
+            <p id="access-message" class="access-message">AWAITING NUMERICAL INPUT</p>
+            <div id="keypad" class="keypad" aria-label="Numeric keypad">
+              <button type="button" data-key="1">1</button><button type="button" data-key="2">2</button><button type="button" data-key="3">3</button>
+              <button type="button" data-key="4">4</button><button type="button" data-key="5">5</button><button type="button" data-key="6">6</button>
+              <button type="button" data-key="7">7</button><button type="button" data-key="8">8</button><button type="button" data-key="9">9</button>
+              <button type="button" class="utility" data-key="clear">CLR</button><button type="button" data-key="0">0</button><button type="button" class="submit" data-key="submit">VERIFY</button>
+            </div>
+            <a id="lab-link" class="lab-link" href="https://avaanis.github.io/green-onions/" hidden>ENTER LABORATORY <span>→</span></a>
+          </div>
+        </section>
+
+        <footer>THIRDCOMM SECURE NETWORK · CASE FILE: AV-01</footer>
+      </section>
+    </main>
+    <script src="script.js"></script>
+  </body>
+</html>
