@@ -13,6 +13,8 @@ const keypad = document.getElementById('keypad');
 const message = document.getElementById('access-message');
 const inputModule = document.querySelector('.input-module');
 const labLink = document.getElementById('lab-link');
+const verificationStatus = document.getElementById('verification-status');
+const verificationText = document.getElementById('verification-text');
 const openInspector = document.getElementById('open-inspector');
 const inspector = document.getElementById('image-inspector');
 const closeInspector = document.getElementById('close-inspector');
@@ -79,11 +81,17 @@ function updateDisplay() {
 function verifyAnswer() {
   if (Number(answer) === CORRECT_BIRD_COUNT && answer !== '') {
     unlocked = true;
-    message.textContent = 'COUNT VERIFIED // CLEARANCE GRANTED';
+    message.textContent = 'COUNT RECEIVED // RUNNING VERIFICATION...';
     message.classList.remove('denied');
-    inputModule.classList.add('verified');
-    labLink.hidden = false;
-    keypad.setAttribute('aria-disabled', 'true');
+    keypad.classList.add('locked');
+    verificationStatus.hidden = false;
+    window.setTimeout(() => {
+      verificationText.textContent = 'ACCESS GRANTED // LABORATORY CLEARANCE ISSUED';
+      verificationStatus.classList.add('granted');
+      message.textContent = 'COUNT VERIFIED // CLEARANCE GRANTED';
+      inputModule.classList.add('verified');
+      labLink.hidden = false;
+    }, 1400);
   } else {
     message.textContent = 'ACCESS DENIED // RECOUNT EXHIBIT A';
     message.classList.remove('denied');
