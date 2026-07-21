@@ -1,7 +1,7 @@
 // ===== CASE CONFIGURATION =====
 // Change this number to the correct number of birds in duolingo.png.
 // Keep it as a number (not quotation marks), for example: const CORRECT_BIRD_COUNT = 12;
-const CORRECT_BIRD_COUNT = 0;
+const CORRECT_BIRD_COUNT = 8;
 
 const intro = document.getElementById('intro');
 const terminal = document.getElementById('terminal');
