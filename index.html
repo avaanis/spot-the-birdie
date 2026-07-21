@@ -43,9 +43,11 @@
 
         <section id="photo-panel" class="panel active" role="tabpanel">
           <div class="panel-heading"><span>EXHIBIT A</span><span>IMAGE // 01</span></div>
-          <p class="panel-note">Expand or pinch to inspect the photograph.</p>
+          <p class="panel-note">Select the image to inspect it. In inspection mode, pinch, scroll, or use the controls to zoom.</p>
           <div class="photo-frame">
-            <img src="duolingo.png" alt="Photographic evidence" />
+            <button id="open-inspector" class="evidence-image-button" type="button" aria-label="Open photographic evidence inspector">
+              <img src="duolingo.png" alt="Photographic evidence" />
+            </button>
           </div>
         </section>
 
@@ -68,6 +70,20 @@
         <footer>THIRDCOMM SECURE NETWORK · CASE FILE: AV-01</footer>
       </section>
     </main>
+    <div id="image-inspector" class="image-inspector" hidden role="dialog" aria-modal="true" aria-label="Photographic evidence inspector">
+      <div class="inspector-topbar">
+        <span>EXHIBIT A // INSPECTION MODE</span>
+        <div class="inspector-controls">
+          <button type="button" data-zoom="out" aria-label="Zoom out">−</button>
+          <button type="button" data-zoom="reset">100%</button>
+          <button type="button" data-zoom="in" aria-label="Zoom in">+</button>
+          <button id="close-inspector" type="button">CLOSE ×</button>
+        </div>
+      </div>
+      <div id="zoom-stage" class="zoom-stage" aria-label="Pinch or drag image to inspect">
+        <img id="zoom-image" src="duolingo.png" alt="Photographic evidence, enlarged view" />
+      </div>
+    </div>
     <script src="script.js"></script>
   </body>
 </html>
