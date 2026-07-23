@@ -21,6 +21,7 @@ const closeInspector = document.getElementById('close-inspector');
 const zoomStage = document.getElementById('zoom-stage');
 const zoomFrame = document.getElementById('zoom-frame'); // the element we actually pan/scale
 const zoomImage = document.getElementById('zoom-image'); // the <video>; never transformed directly
+const mainVideo = document.getElementById('main-evidence-video'); // the looping clip in the main panel
 let answer = '';
 let unlocked = false;
 let zoom = 1;
@@ -105,15 +106,29 @@ function verifyAnswer() {
 // Inspection mode supports mouse wheel, buttons, dragging, and genuine two-finger pinch zoom.
 // The transform always targets #zoom-frame (a plain div), never the <video> itself — see the
 // comment in index.html for why.
+//
+// PERFORMANCE NOTE: the main panel video and the inspector video are the same clip rendered
+// twice in the DOM (so the inspector can show a separate, transformable copy). Running both
+// <video> decoders at once is the main source of jank/"glitching" on lower-end machines, so
+// only one of the two is ever actually playing: the main clip pauses the moment the inspector
+// opens and resumes the moment it closes.
 openInspector.addEventListener('click', () => {
   inspector.hidden = false;
   resetView();
+  mainVideo.pause?.();
+  zoomImage.currentTime = mainVideo.currentTime || 0;
   zoomImage.play?.();
   closeInspector.focus();
 });
-closeInspector.addEventListener('click', () => { inspector.hidden = true; zoomImage.pause?.(); });
+function closeInspectorView() {
+  inspector.hidden = true;
+  zoomImage.pause?.();
+  mainVideo.currentTime = zoomImage.currentTime || 0;
+  mainVideo.play?.();
+}
+closeInspector.addEventListener('click', closeInspectorView);
 document.addEventListener('keydown', (event) => {
-  if (event.key === 'Escape') { inspector.hidden = true; zoomImage.pause?.(); }
+  if (event.key === 'Escape' && !inspector.hidden) closeInspectorView();
 });
 document.querySelectorAll('[data-zoom]').forEach((button) => {
   button.addEventListener('click', () => {
@@ -164,8 +179,14 @@ function updateTransform() { zoomFrame.style.transform = `translate(${panX}px, $
   const glitchEl = document.querySelector('#glitch-sweep');
   const anomalyEl = document.querySelector('#anomaly-flare');
 
+  // Cap concurrent spores so the DOM/paint cost can't creep up if a tab is left open a long
+  // time (previously spawned on a fixed 550ms timer with no ceiling, regardless of how many
+  // were already alive and animating with a glow effect).
+  const MAX_SPORES = 28;
+
   function spawnSpore() {
     if (!sporeField) return;
+    if (sporeField.childElementCount >= MAX_SPORES) return;
     const spore = document.createElement('div');
     spore.className = 'spore';
     const duration = 9 + Math.random() * 8;
@@ -202,4 +223,15 @@ function updateTransform() { zoomFrame.style.transform = `translate(${panX}px, $
     setTimeout(() => { triggerAnomaly(); scheduleAnomaly(); }, delay);
   }
   scheduleAnomaly();
+
+  // Pause all the ambient effects (spores, flicker sweeps) while the tab is in the background —
+  // there's no visual reason to keep animating and burning CPU/battery for a page nobody is
+  // looking at.
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      mainVideo?.pause();
+    } else if (inspector.hidden) {
+      mainVideo?.play?.();
+    }
+  });
 })();
