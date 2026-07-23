@@ -53,7 +53,7 @@
           <p class="panel-note">Select the image to inspect it. In inspection mode, pinch, scroll, or use the controls to zoom.</p>
           <div class="photo-frame">
             <button id="open-inspector" class="evidence-image-button" type="button" aria-label="Open photographic evidence inspector">
-              <video src="duolingo.mp4" autoplay loop muted playsinline aria-hidden="true"></video>
+              <video id="main-evidence-video" src="duolingo.mp4" autoplay muted loop playsinline aria-hidden="true"></video>
             </button>
           </div>
         </section>
@@ -99,7 +99,7 @@
           The video just fills the wrapper via object-fit: contain and stays untransformed.
         -->
         <div id="zoom-frame" class="zoom-frame">
-          <video id="zoom-image" src="duolingo.mp4" autoplay loop muted playsinline aria-hidden="true"></video>
+          <video id="zoom-image" src="duolingo.mp4" muted loop playsinline preload="none" aria-hidden="true"></video>
         </div>
       </div>
     </div>
