@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#07110e" />
-    <title>THIRDCOMM Field Analysis Terminal</title>
+    <title>THIRDCOMM Field Analysis Terminal — FILE 04</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
@@ -12,9 +12,15 @@
   </head>
   <body>
     <div class="screen-noise" aria-hidden="true"></div>
+    <div class="vignette" aria-hidden="true"></div>
+    <div class="scan-beam" aria-hidden="true"></div>
+    <div class="spores" id="spores" aria-hidden="true"></div>
+    <div class="glitch-sweep" id="glitch-sweep" aria-hidden="true"></div>
+    <div class="anomaly-flare" id="anomaly-flare" aria-hidden="true"></div>
 
     <main class="terminal-shell">
       <section id="intro" class="intro" aria-label="Start field analysis">
+        <div class="intro-tag">FILE 04 / 07</div>
         <p class="system-label">THIRDCOMM // FIELD ANALYSIS TERMINAL</p>
         <button id="begin-button" class="magnifier-button" type="button" aria-label="Begin evidence scan">
           <img src="magnifying-glass.png" alt="Magnifying glass" />
@@ -24,9 +30,10 @@
       </section>
 
       <section id="terminal" class="terminal hidden" aria-live="polite">
+        <div class="stamp">FILE 04 / 07</div>
         <header class="terminal-header">
           <div>
-            <p class="eyebrow">THIRDCOMM / UNIT 03</p>
+            <p class="eyebrow">THIRDCOMM</p>
             <h1>FIELD ANALYSIS TERMINAL</h1>
           </div>
           <p class="signal"><span></span> SIGNAL LOCKED</p>
@@ -46,7 +53,7 @@
           <p class="panel-note">Select the image to inspect it. In inspection mode, pinch, scroll, or use the controls to zoom.</p>
           <div class="photo-frame">
             <button id="open-inspector" class="evidence-image-button" type="button" aria-label="Open photographic evidence inspector">
-              <img src="duolingo.png" alt="Photographic evidence" />
+              <video src="duolingo.mp4" autoplay loop muted playsinline aria-hidden="true"></video>
             </button>
           </div>
         </section>
@@ -71,7 +78,7 @@
           </div>
         </section>
 
-        <footer>THIRDCOMM SECURE NETWORK · CASE FILE: AV-01</footer>
+        <footer>THIRDCOMM SECURE NETWORK · CASE FILE: AV-01 · FILE 04 / 07</footer>
       </section>
     </main>
     <div id="image-inspector" class="image-inspector" hidden role="dialog" aria-modal="true" aria-label="Photographic evidence inspector">
@@ -85,7 +92,15 @@
         </div>
       </div>
       <div id="zoom-stage" class="zoom-stage" aria-label="Pinch or drag image to inspect">
-        <img id="zoom-image" src="duolingo.png" alt="Photographic evidence, enlarged view" />
+        <!--
+          IMPORTANT: the pan/zoom transform is applied to this wrapper div (#zoom-frame),
+          never directly to the <video> element. Transforming a playing <video> directly
+          causes blank/glitched/cropped rendering in Chrome and Safari once scale != 1.
+          The video just fills the wrapper via object-fit: contain and stays untransformed.
+        -->
+        <div id="zoom-frame" class="zoom-frame">
+          <video id="zoom-image" src="duolingo.mp4" autoplay loop muted playsinline aria-hidden="true"></video>
+        </div>
       </div>
     </div>
     <script src="script.js"></script>
