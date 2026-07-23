@@ -1,5 +1,5 @@
 // ===== CASE CONFIGURATION =====
-// Change this number to the correct number of birds in duolingo.png.
+// Change this number to the correct number of birds in duolingo.mp4.
 // Keep it as a number (not quotation marks), for example: const CORRECT_BIRD_COUNT = 12;
 const CORRECT_BIRD_COUNT = 8;
 
@@ -19,7 +19,8 @@ const openInspector = document.getElementById('open-inspector');
 const inspector = document.getElementById('image-inspector');
 const closeInspector = document.getElementById('close-inspector');
 const zoomStage = document.getElementById('zoom-stage');
-const zoomImage = document.getElementById('zoom-image');
+const zoomFrame = document.getElementById('zoom-frame'); // the element we actually pan/scale
+const zoomImage = document.getElementById('zoom-image'); // the <video>; never transformed directly
 let answer = '';
 let unlocked = false;
 let zoom = 1;
@@ -43,6 +44,7 @@ function startTerminal() {
 }
 
 function typeReport(text) {
+  typewriter.textContent = ''; // guard against duplicate text if ever called twice
   let index = 0;
   const timer = window.setInterval(() => {
     typewriter.textContent += text[index++];
@@ -101,14 +103,17 @@ function verifyAnswer() {
 }
 
 // Inspection mode supports mouse wheel, buttons, dragging, and genuine two-finger pinch zoom.
+// The transform always targets #zoom-frame (a plain div), never the <video> itself — see the
+// comment in index.html for why.
 openInspector.addEventListener('click', () => {
   inspector.hidden = false;
   resetView();
+  zoomImage.play?.();
   closeInspector.focus();
 });
-closeInspector.addEventListener('click', () => { inspector.hidden = true; });
+closeInspector.addEventListener('click', () => { inspector.hidden = true; zoomImage.pause?.(); });
 document.addEventListener('keydown', (event) => {
-  if (event.key === 'Escape') inspector.hidden = true;
+  if (event.key === 'Escape') { inspector.hidden = true; zoomImage.pause?.(); }
 });
 document.querySelectorAll('[data-zoom]').forEach((button) => {
   button.addEventListener('click', () => {
@@ -146,4 +151,55 @@ zoomStage.addEventListener('pointermove', (event) => {
 function pointerDistance() { const [a, b] = [...pointers.values()]; return Math.hypot(a.x - b.x, a.y - b.y); }
 function setZoom(value) { zoom = Math.min(6, Math.max(1, value)); if (zoom === 1) { panX = 0; panY = 0; } updateTransform(); }
 function resetView() { zoom = 1; panX = 0; panY = 0; updateTransform(); }
-function updateTransform() { zoomImage.style.transform = `translate(${panX}px, ${panY}px) scale(${zoom})`; }
+function updateTransform() { zoomFrame.style.transform = `translate(${panX}px, ${panY}px) scale(${zoom})`; }
+
+/* ==========================
+   BACKGROUND ATMOSPHERE
+   ========================== */
+(function () {
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduceMotion) return;
+
+  const sporeField = document.querySelector('#spores');
+  const glitchEl = document.querySelector('#glitch-sweep');
+  const anomalyEl = document.querySelector('#anomaly-flare');
+
+  function spawnSpore() {
+    if (!sporeField) return;
+    const spore = document.createElement('div');
+    spore.className = 'spore';
+    const duration = 9 + Math.random() * 8;
+    const drift = (Math.random() * 60 - 30).toFixed(0);
+    spore.style.left = `${Math.random() * 100}%`;
+    spore.style.setProperty('--drift', `${drift}px`);
+    spore.style.animationDuration = `${duration}s`;
+    sporeField.append(spore);
+    setTimeout(() => spore.remove(), duration * 1000);
+  }
+  setInterval(spawnSpore, 550);
+  for (let i = 0; i < 10; i++) setTimeout(spawnSpore, i * 300);
+
+  function triggerGlitch() {
+    if (!glitchEl) return;
+    glitchEl.classList.remove('active');
+    void glitchEl.offsetWidth;
+    glitchEl.classList.add('active');
+  }
+  function scheduleGlitch() {
+    const delay = 5000 + Math.random() * 9000;
+    setTimeout(() => { triggerGlitch(); scheduleGlitch(); }, delay);
+  }
+  scheduleGlitch();
+
+  function triggerAnomaly() {
+    if (!anomalyEl) return;
+    anomalyEl.classList.remove('active');
+    void anomalyEl.offsetWidth;
+    anomalyEl.classList.add('active');
+  }
+  function scheduleAnomaly() {
+    const delay = 26000 + Math.random() * 34000;
+    setTimeout(() => { triggerAnomaly(); scheduleAnomaly(); }, delay);
+  }
+  scheduleAnomaly();
+})();
